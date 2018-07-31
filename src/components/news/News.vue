@@ -25,11 +25,11 @@
 <style scoped>
   a {
     color: rgb(94, 95, 95);
-    text-decoration: none;
   }
 
   a:hover {
     color: #3ccaf5;
+    text-decoration: none;
   }
 
   h2 {

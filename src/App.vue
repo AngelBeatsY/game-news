@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <img class="nav_img" src="./assets/bgimg.jpg"> -->
-    <b-jumbotron header="Game News" lead="vgTime&Gamersky daily news" class="jumbotron">
+    <b-jumbotron header="Game News" lead="vgTime&Gamersky daily news" class="news-jumbotron">
       <p>赞美太阳</p>
     </b-jumbotron>
     <!-- <router-link :to="{name: 'Home'}">首页</router-link> -->
@@ -18,7 +18,7 @@
 
 </script>
 
-<style>
+<style scoped>
   #app {
     font-family: "Avenir", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -28,18 +28,18 @@
     margin-top: 5px;
   }
 
-  .jumbotron {
+  .news-jumbotron {
     font-weight: bold;
     color: #fbff00;
     position: relative;
     background: rgba(0, 0, 0, 0.5);
   }
 
-  .jumbotron::after {
-    content: '';
+  .news-jumbotron::after {
+    content: "";
     width: 100%;
     height: 100%;
-    background: url('./assets/cyberpunk.jpg') no-repeat 0 -420px;
+    background: url("./assets/cyberpunk.jpg") no-repeat 0 -420px;
     background-size: cover;
     position: absolute;
     top: 0;
