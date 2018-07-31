@@ -9,31 +9,36 @@ import os
 import json
 import time
 import math
-from bs4 import BeautifulSoup #BeautifulSoup是一个可以从HTML或XML文件中提取数据的Python库
+from bs4 import BeautifulSoup  # BeautifulSoup是一个可以从HTML或XML文件中提取数据的Python库
 
-def getHtml(url):   #根据给定的网址来获取网页详细信息，得到的html就是网页的源代码
+
+def getHtml(url):  # 根据给定的网址来获取网页详细信息，得到的html就是网页的源代码
     page = urllib.request.urlopen(url)
     html = page.read()
     return html.decode('UTF-8')
 
-def getNews(html): #查询新闻标题和链接
-    soup = BeautifulSoup(html,"html.parser")
+
+def getNews(html):  # 查询新闻标题和链接
+    soup = BeautifulSoup(html, "html.parser")
     linklist = soup.find_all("ul", class_="Ptxt")
     a_list = []
     data_dict = {}
-    for x in range(0,3): #根据具体的网页确定循环，该网页class="Ptxt"的ul有多个，且部分不需要爬取;循环结尾为第二个参数减一
+    for x in range(0, 3):  # 根据具体的网页确定循环，该网页class="Ptxt"的ul有多个，且部分不需要爬取;循环结尾为第二个参数减一
         a_list = a_list + linklist[x].find_all("a")
     for link in a_list:
         href = link.get("href")
         title = link.get("title")
         data_dict[href] = title
-    data_dict["latestUpdate"] =  math.ceil(time.time())
+    data_dict["latestUpdate"] = math.ceil(time.time())
     return data_dict
 
-def isFile(path,filename):  # 判断文件是否存在及文件是否为空
+
+def isFile(path, filename):  # 判断文件是否存在及文件是否为空
     is_path = os.path.isdir(path)
-    is_file = False if not is_path else os.path.isfile(path+'/'+filename)  # 判断文件是否存在 XX if XX else XX是python中的三目运算
-    is_empty = False if not is_file else os.path.getsize(path+'/'+filename)  # 判断文件是否为空
+    is_file = False if not is_path else os.path.isfile(
+        path+'/'+filename)  # 判断文件是否存在 XX if XX else XX是python中的三目运算
+    is_empty = False if not is_file else os.path.getsize(
+        path+'/'+filename)  # 判断文件是否为空
     if is_file and is_empty:
         return True
     elif not is_file:
@@ -43,7 +48,8 @@ def isFile(path,filename):  # 判断文件是否存在及文件是否为空
         # print('空文件')
         return False
 
-def appendDict(a_dict,b_dict):   # 将b_dict追加到a_dict中
+
+def appendDict(a_dict, b_dict):   # 将b_dict追加到a_dict中
     # a_dict = {'a':'1111','b':'2222'}
     # b_dict = {'e':'5555','f':'6666'}
     for i in b_dict:
@@ -51,21 +57,23 @@ def appendDict(a_dict,b_dict):   # 将b_dict追加到a_dict中
     # print(a_dict)
     return a_dict
 
-def readJson(path,filename):
-    if isFile(path,filename):
-        os.chdir(path) # 修改当前工作目录
-        with open(filename, 'r' ,encoding='utf-8') as f:   # Reading data back
+
+def readJson(path, filename):
+    if isFile(path, filename):
+        os.chdir(path)  # 修改当前工作目录
+        with open(filename, 'r', encoding='utf-8') as f:   # Reading data back
             data = json.load(f)
-        if type(data)==str: # 判断data是str格式还是dict,若为str则转为dict
-            json_str = json.loads(data) # json编码的字符串转dict
+        if type(data) == str:  # 判断data是str格式还是dict,若为str则转为dict
+            json_str = json.loads(data)  # json编码的字符串转dict
             return json_str
         else:
             return data
     else:
-        return {} # 文件不存在(空)时返回空dict
+        return {}  # 文件不存在(空)时返回空dict
 
-def writeJson(path,filename,data):
-    if not os.path.isdir(path):  
+
+def writeJson(path, filename, data):
+    if not os.path.isdir(path):
         os.makedirs(path)
     os.chdir(path)  # 修改当前工作目录
     json_str = json.dumps(data)  # dict转换为JSON编码的字符串
@@ -73,15 +81,16 @@ def writeJson(path,filename,data):
     with open(filename, 'w') as f:   # Writing JSON data
         json.dump(json_str, f)
 
-html = getHtml("http://www.gamersky.com/")#获取该网址网页详细信息，得到的html就是网页的源代码
+
+html = getHtml("http://www.gamersky.com/")  # 获取该网址网页详细信息，得到的html就是网页的源代码
 # path = os.path.dirname(os.getcwd())+'/static'
 path = os.getcwd()+'/jsonData'
 filename = 'GSNewsInfo.json'
-read_dict = readJson(path,filename)
+read_dict = readJson(path, filename)
 if math.ceil(time.time())-read_dict["latestUpdate"] > 3600:
     data_dict = getNews(html)
-    data_dict = appendDict(read_dict,data_dict)
-    writeJson(path,filename,data_dict)
+    data_dict = appendDict(read_dict, data_dict)
+    writeJson(path, filename, data_dict)
     read_dict = data_dict
 
 # print(len(read_dict))
@@ -89,4 +98,4 @@ if math.ceil(time.time())-read_dict["latestUpdate"] > 3600:
 #     print(read_dict[x])
 #     print(x)
 
-print(json.dumps(read_dict)) # 需要输出JSON字符串,否则返回的数据无法解析
+print(json.dumps(read_dict))  # 需要输出JSON字符串,否则返回的数据无法解析
