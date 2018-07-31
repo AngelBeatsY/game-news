@@ -87,7 +87,13 @@ html = getHtml("http://www.gamersky.com/")  # 获取该网址网页详细信息�
 path = os.getcwd()+'/jsonData'
 filename = 'GSNewsInfo.json'
 read_dict = readJson(path, filename)
-if math.ceil(time.time())-read_dict["latestUpdate"] > 3600:
+if isFile(path, filename):
+    if math.ceil(time.time())-read_dict["latestUpdate"] > 3600: #判断距离上次更新是否超过3600秒
+        data_dict = getNews(html)
+        data_dict = appendDict(read_dict, data_dict)
+        writeJson(path, filename, data_dict)
+        read_dict = data_dict
+else:
     data_dict = getNews(html)
     data_dict = appendDict(read_dict, data_dict)
     writeJson(path, filename, data_dict)

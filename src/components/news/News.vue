@@ -1,9 +1,9 @@
 <template>
   <div class="news">
     <h2>
-      <router-link to="/news/gsNews">GamerSky</router-link>
+      <router-link to="/gsNews">GamerSky</router-link>
       <br>
-      <router-link to="/news/vgNews">VGTime</router-link>
+      <router-link to="/vgNews">VGTime</router-link>
     </h2>
     <router-view/>
   </div>
@@ -35,7 +35,7 @@
   h2 {
     position: fixed;
     right: 12%;
-    top: 20%;
+    top: 40%;
     text-align: left;
     line-height: 48px;
 

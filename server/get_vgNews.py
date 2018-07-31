@@ -30,8 +30,7 @@ def getNews(html):  # 查询新闻标题和链接
         cover = link.find("img").get("src")
         p = li.select(".info_box p")[0].string
         username = li.select(".user_name")[0].string
-        data_dict[href] = {"title": title,
-                           "cover": cover, "p": p, "username": username}
+        data_dict[href] = {"title": title,"cover": cover, "p": p, "username": username}
     data_dict["latestUpdate"] = math.ceil(time.time())
     return data_dict
 
@@ -90,7 +89,13 @@ html = getHtml("http://www.vgtime.com/")  # 获取该网址网页详细信息，
 path = os.getcwd()+'/jsonData'
 filename = 'VGNewsInfo.json'
 read_dict = readJson(path, filename)
-if math.ceil(time.time())-read_dict["latestUpdate"] > 3600:
+if isFile(path, filename):
+    if math.ceil(time.time())-read_dict["latestUpdate"] > 3600: #判断距离上次更新是否超过3600秒
+        data_dict = getNews(html)
+        data_dict = appendDict(read_dict, data_dict)
+        writeJson(path, filename, data_dict)
+        read_dict = data_dict
+else:
     data_dict = getNews(html)
     data_dict = appendDict(read_dict, data_dict)
     writeJson(path, filename, data_dict)

@@ -14,6 +14,9 @@
         <span>{{data_json[link]["username"]}}</span>
       </div>
     </div>
+    <div>
+      <button @click="loadMore" class="btn" v-if="!loadfinish">加载更多...</button>
+    </div>
   </div>
 </template>
 
@@ -23,21 +26,33 @@
     data() {
       return {
         data_json: "",
-        msg: ""
+        msg: "",
+        loadfinish: false,
+        page: 1
       };
     },
-    mounted() {
-      this.axios.get("/api/vgNews").then(body => {
-        if (typeof body.data == "object") {
-          this.data_json = body.data;
-        } else {
-          this.data_json = JSON.parse(body.data);
-          let i = 0;
-          for (let x in this.data_json) {
-            i++;
+    methods: {
+      loadMore() {
+        this.page++;
+        this.axios.get(`/api/vgNews/${this.page}`).then(body => {
+          if (typeof body.data != "object") {
+            body.data = JSON.parse(body.data);
           }
-          this.msg = i;
+          this.data_json = body.data['news'];
+          this.msg = body.data['details']['sum'];
+          if (body.data['details']['loaded'] >= this.msg) {
+            this.loadfinish = true;
+          }
+        });
+      }
+    },
+    mounted() {
+      this.axios.get(`/api/vgNews/${this.page}`).then(body => {
+        if (typeof body.data != "object") {
+          body.data = JSON.parse(body.data);
         }
+        this.data_json = body.data['news'];
+        this.msg = body.data['details']['sum'];
       });
     }
   };
@@ -49,6 +64,7 @@
     font-family: Microsoft Yahei;
     color: #333;
     text-align: center;
+    margin-bottom: 35px;
   }
 
   a {
