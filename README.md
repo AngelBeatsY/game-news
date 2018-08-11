@@ -1,3 +1,6 @@
+# game-news
+利用python爬取gamersky，vgtime每日新闻，并显示到网页
+
 # games
 
 > A Vue.js project
